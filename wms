@@ -1,0 +1,178 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "wms",
+    "collectionId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+    "dateExported": "2024-11-11T22:59:54.290Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "b5ceb20c-964b-47e5-8ab8-b3169c6673a1",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Add new product",
+            "url": "http://localhost:8888/product",
+            "method": "POST",
+            "sortNum": 2500,
+            "created": "2024-11-11T06:41:47.377Z",
+            "modified": "2024-11-11T06:41:47.377Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "[\n  {\n      \"name\": \"Wireless Earbuds\",\n      \"description\": \"High-quality sound with noise cancellation and Bluetooth 5.0 connectivity.\",\n      \"price\": 59.99,\n      \"category\": \"Electronics\",\n      \"quantity\": 120,\n      \"image\": \"https://www.bestof.info/wp-content/uploads/2019/03/Longrun-Wireless-Earbuds.jpg\"\n    },\n    {\n      \"name\": \"Organic Cotton T-Shirt\",\n      \"description\": \"Soft, breathable t-shirt made from 100% organic cotton.\",\n      \"price\": 25.00,\n      \"category\": \"Apparel\",\n      \"quantity\": 200,\n      \"image\": \"https://bunyacottage.com.au/wp-content/uploads/2022/09/Adult-Organic-Cotton-T-Shirts.jpg\"\n    },\n    {\n      \"name\": \"Stainless Steel Water Bottle\",\n      \"description\": \"Eco-friendly, insulated water bottle with a 1-liter capacity.\",\n      \"price\": 19.99,\n      \"category\": \"Home & Kitchen\",\n      \"quantity\": 150,\n      \"image\": \"https://www.homebrewtalk.com/attachments/stainless-steel-750ml-water-bottle-jpg.723520/\"\n    },\n    {\n      \"name\": \"Yoga Mat\",\n      \"description\": \"Non-slip, extra-thick yoga mat for ultimate comfort during workouts.\",\n      \"price\": 35.50,\n      \"category\": \"Sports & Outdoors\",\n      \"quantity\": 75,\n      \"image\": \"https://elyogamola.com/wp-content/uploads/2020/01/Natural-Rubber-Yoga-Mat.jpg\"\n    },\n    {\n      \"name\": \"LED Desk Lamp\",\n      \"description\": \"Dimmable LED desk lamp with adjustable neck and USB charging port.\",\n      \"price\": 45.99,\n      \"category\": \"Office Supplies\",\n      \"quantity\": 85,\n      \"image\": \"https://brickseek.com/wp-content/uploads/2018/05/Mainstays-LED-Desk-Lamp.jpg\"\n    }\n  ]",
+                "form": []
+            }
+        },
+        {
+            "_id": "d10bb420-dcf2-4802-b2d0-6c3024d505e9",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Check health",
+            "url": "http://localhost:8888",
+            "method": "GET",
+            "sortNum": 5000,
+            "created": "2024-11-11T06:12:28.010Z",
+            "modified": "2024-11-11T06:12:28.010Z",
+            "headers": []
+        },
+        {
+            "_id": "b007a48c-ec42-4df4-ac8a-270f7f59800b",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Get all products",
+            "url": "http://localhost:8888/products",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-11-11T06:12:21.130Z",
+            "modified": "2024-11-11T06:12:21.130Z",
+            "headers": []
+        },
+        {
+            "_id": "6f534803-ccc7-4263-b698-a74aa3d8a15a",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Filter products by name",
+            "url": "http://localhost:8888/products?name=steel",
+            "method": "GET",
+            "sortNum": 15000,
+            "created": "2024-11-11T22:55:49.869Z",
+            "modified": "2024-11-11T22:55:49.869Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "*/*",
+                    "isDisabled": true
+                },
+                {
+                    "name": "User-Agent",
+                    "value": "Thunder Client (https://www.thunderclient.com)",
+                    "isDisabled": true
+                }
+            ],
+            "params": [
+                {
+                    "name": "name",
+                    "value": "steel",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "135ad98e-c43a-41f6-8598-e447e4ba6dac",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Filter products by category",
+            "url": "http://localhost:8888/products?category=apparel",
+            "method": "GET",
+            "sortNum": 27500,
+            "created": "2024-11-11T22:57:49.322Z",
+            "modified": "2024-11-11T22:57:49.322Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "category",
+                    "value": "apparel",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "6c3b7228-38a0-4ca2-be59-fdd69e0ffa13",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Filter products by price (max and min)",
+            "url": "http://localhost:8888/products?min_price=20&max_price=35",
+            "method": "GET",
+            "sortNum": 33750,
+            "created": "2024-11-11T22:58:25.741Z",
+            "modified": "2024-11-11T22:58:25.741Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "min_price",
+                    "value": "20",
+                    "isPath": false
+                },
+                {
+                    "name": "max_price",
+                    "value": "35",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "6a6d75ac-8340-4a66-8de6-9449fa224e8b",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Get all available products (quantity > 0)",
+            "url": "http://localhost:8888/products?in_stock",
+            "method": "GET",
+            "sortNum": 36875,
+            "created": "2024-11-11T22:59:10.304Z",
+            "modified": "2024-11-11T22:59:10.304Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "in_stock",
+                    "value": "",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "2b33004e-333c-42d7-ba97-6e8bb840125b",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Update a specific product",
+            "url": "http://localhost:8888/product/6731a71ced1574a56664dbc6",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2024-11-11T06:43:18.986Z",
+            "modified": "2024-11-11T06:43:18.986Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Updated Wireless Earbuds\",\n  \"description\": \"Upgraded version with better sound quality and extended battery life.\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "c2697b25-4a4d-4376-abe0-a8095c6dfae0",
+            "colId": "35b794f3-dd17-45ce-bb91-e7bb59049c39",
+            "containerId": "",
+            "name": "Delete a specific product",
+            "url": "http://localhost:8888/product/6731a71ced1574a56664dbc6",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2024-11-11T06:43:45.514Z",
+            "modified": "2024-11-11T06:43:45.514Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Updated Wireless Earbuds\",\n  \"description\": \"Upgraded version with better sound quality and extended battery life.\"\n}",
+                "form": []
+            }
+        }
+    ],
+    "ref": "P06iX-HivCSamsdhCAJD1yj3QcYAU-Ev6-wD1GoKrGCqIwoDCc4al5kNuZ1ms5hr2sYLyC5nh_vocWd4fgR6Lg"
+}
