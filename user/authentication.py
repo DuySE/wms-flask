@@ -14,16 +14,17 @@ connect(db="test_user", host="mongodb+srv://admin:admin@cluster0.pnwu9.mongodb.n
 app.config['JWT_SECRET_KEY'] = 'cSiS4280'
 jwt = JWTManager(app)
 
-@app.route('/register', methods=['POST'])
-def register():
-    if not request.json or not all(k in request.json for k in ('email', 'password')):
+@app.route('/signup', methods=['POST'])
+def signup():
+    if not request.json or not all(k in request.json for k in ('userName', 'email', 'password')):
         return abort(400, "Request must contain 'Email' and 'Password'.")
 
+    user_name = request.json['userName']
     email = request.json['email']
     password = request.json['password']
 
     try:
-        existing_user = User.objects(email__iexact=email).first()
+        existing_user = User.objects(email=email).first()
 
         if existing_user:
             return jsonify({'message': email + ' is already taken.'}), 400
@@ -31,13 +32,22 @@ def register():
         hashed_password = generate_password_hash(password)
 
         new_user = User (
+            user_name = user_name,
             email = email,
             password = hashed_password,
         )
 
         new_user.save()
 
-        return jsonify({'message': 'User registration successful'}), 201
+        access_token = create_access_token(identity=str(new_user.id), additional_claims={'role': new_user.role})
+
+        return jsonify({
+            'message': 'Success sign up',
+            'access_token': access_token,
+            'user_info': {
+                'id': str(new_user.id),
+                'role': new_user.role
+            }}), 201
     except Exception as e :
         return jsonify({'message': 'An error occurred during registration', 'error':str(e)}), 500
 
@@ -54,12 +64,13 @@ def login():
         if not user or not check_password_hash(user.password, password):
             return jsonify({'message': 'Invalid login credentials'}), 401
 
-        access_token = create_access_token(identity=user.id, additional_claims={'role': user.role})
+        access_token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
         return jsonify({
+            'message': 'Success log in',
             'access_token': access_token,
             'user_info': {
                 'id': str(user.id),
-                'email': user.email,
+                'user_name': user.user_name,
                 'role': user.role
             }
         })
