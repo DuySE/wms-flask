@@ -17,7 +17,7 @@ def home():
     return jsonify({'message': 'Welcome to the Product API'}), 200
 
 # Route to add a new product
-@app.route('/product', methods=['POST'])
+@app.route('/products', methods=['POST'])
 def add_product():
     # Ensure request JSON exists and is a list
     if not request.json or not isinstance(request.json, list):
@@ -58,12 +58,28 @@ def get_products():
             '_id': 1, 'name': 1, 'description': 1, 'price': 1, 'category': 1,
             'quantity': 1, 'image': 1
         }).limit(20))
+        for product in products:
+            product['_id'] = str(product['_id'])
         return jsonify(products), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Route to get a specific product by name
+@app.route('/products/<name>', methods=['GET'])
+def get_product_by_name(name):
+    try:
+        product = products_collection.find_one({'name': name}, {
+            'name': 1, 'description': 1, 'price': 1, 'category': 1,
+            'quantity': 1, 'image': 1
+        })
+        if product:
+            product['_id'] = str(product['_id'])
+            return jsonify(product), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # Route to update product
-@app.route('/product/<product_id>', methods=['PUT'])
+@app.route('/products/<product_id>', methods=['PUT'])
 def update_product(product_id):
     try:
         data = request.json
@@ -73,7 +89,7 @@ def update_product(product_id):
         return jsonify({'error': str(e)}), 500
 
 # Route to delete product
-@app.route('/product/<product_id>', methods=['DELETE'])
+@app.route('/products/<product_id>', methods=['DELETE'])
 def delete_product(product_id):
     try:
         products_collection.delete_one({'_id': ObjectId(product_id)})
