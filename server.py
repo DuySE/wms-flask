@@ -38,7 +38,7 @@ def add_product():
                 'price': product['price'],
                 'category': product['category'],
                 'quantity': product['quantity'],
-                'image': product['image']
+                'image': product['image'],
             }
             new_products.append(new_product)
 
@@ -52,29 +52,38 @@ def add_product():
 # Route to get all products
 @app.route('/products', methods=['GET'])
 def get_products():
+
+    # Get optional query parameters for filtering
+    name = request.args.get('name')
+    category = request.args.get('category')
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+    in_stock = request.args.get('in_stock')
+
+    # Build query based on parameters
+    query = {}
+
+    if category:
+        # Case-insensitive
+        query['category'] = {'$regex': category, '$options': 'i'}
+    if name:
+        # Case-insensitive
+        query['name'] = {'$regex': name, '$options': 'i'}
+    if min_price or max_price:
+        query['price'] = {}
+        if min_price:
+            query['price']['$gte'] = min_price
+        if max_price:
+            query['price']['$lte'] = max_price
+    if in_stock is not None:
+        query['quantity'] = {'$gt': 0}
+
     try:
         # Fetch products
-        products = list(products_collection.find({}, {
-            '_id': 1, 'name': 1, 'description': 1, 'price': 1, 'category': 1,
-            'quantity': 1, 'image': 1
-        }).limit(20))
+        products = list(products_collection.find(query))
         for product in products:
             product['_id'] = str(product['_id'])
         return jsonify(products), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Route to get a specific product by name
-@app.route('/products/<name>', methods=['GET'])
-def get_product_by_name(name):
-    try:
-        product = products_collection.find_one({'name': name}, {
-            'name': 1, 'description': 1, 'price': 1, 'category': 1,
-            'quantity': 1, 'image': 1
-        })
-        if product:
-            product['_id'] = str(product['_id'])
-            return jsonify(product), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -96,7 +105,7 @@ def delete_product(product_id):
         return jsonify({'message': 'Product deleted successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 if __name__ == '__main__':
     # Run the application on all available IPs on port 8888
     app.run(host='0.0.0.0', port=8888)
