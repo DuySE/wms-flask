@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 from werkzeug.security import check_password_hash, generate_password_hash
 from mongoengine import connect
+from datetime import timedelta
 from user_model import User
 
 app = Flask(__name__)
@@ -12,6 +13,7 @@ app = Flask(__name__)
 connect(db="test_user", host="mongodb+srv://admin:admin@cluster0.pnwu9.mongodb.net/test_user", alias="default")
 
 app.config['JWT_SECRET_KEY'] = 'cSiS4280'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=60)
 jwt = JWTManager(app)
 
 @app.route('/signup', methods=['POST'])
@@ -99,5 +101,70 @@ def admin():
     else:
         return False
 
+# Route to get all users
+@app.route('/users', methods=['GET'])
+@jwt_required()
+def get_users():
+    try:
+        users = User.objects()
+        user_list = [  
+            {
+                'id': str(user.id),
+                'user_name': user.user_name,
+                'email': user.email,
+                'role': user.role
+            }
+            for user in users
+        ]
+        return jsonify(user_list), 200
+    except Exception as e:
+        return jsonify({'message': 'An error occurred while retrieving users', 'error': str(e)}), 500
+
+# Route to get a specific user by username or email
+@app.route('/users', methods=['GET'])
+def get_user():
+    try:
+        # Extract query parameters
+        email = request.args.get('email')
+        user_name = request.args.get('user_name')
+
+        # Validate input
+        if not email and not user_name:
+            return jsonify({'success': False, 'message': 'Email or name is required'}), 400
+        
+        # Build query
+        query = {}
+        if email:
+            query['email'] = email
+        if user_name:
+            query['user_name'] = user_name
+
+        # Search for user
+        user = User.objects(**query).first()
+        if user:
+            user = {
+                'id': str(user.id),
+                'user_name': user.user_name,
+                'email': user.email,
+                'role': user.role
+            }
+            return jsonify({'success': True, 'data': user}), 200
+        else:
+            return jsonify({'success': False, 'message': 'User not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'}), 500
+
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    # Delete a user by id
+    try:
+        user = User.objects.get(user_id=user_id)
+        user.delete()
+        return jsonify({'message': 'User deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/users/')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8888)

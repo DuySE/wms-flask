@@ -17,7 +17,7 @@ def home():
     return jsonify({'message': 'Welcome to the Product API'}), 200
 
 # Route to add a new product
-@app.route('/product', methods=['POST'])
+@app.route('/products', methods=['POST'])
 def add_product():
     # Ensure request JSON exists and is a list
     if not request.json or not isinstance(request.json, list):
@@ -88,7 +88,7 @@ def get_products():
         return jsonify({'error': str(e)}), 500
 
 # Route to update product
-@app.route('/product/<product_id>', methods=['PUT'])
+@app.route('/products/<product_id>', methods=['PUT'])
 def update_product(product_id):
     try:
         data = request.json
@@ -98,7 +98,7 @@ def update_product(product_id):
         return jsonify({'error': str(e)}), 500
 
 # Route to delete product
-@app.route('/product/<product_id>', methods=['DELETE'])
+@app.route('/products/<product_id>', methods=['DELETE'])
 def delete_product(product_id):
     try:
         products_collection.delete_one({'_id': ObjectId(product_id)})
