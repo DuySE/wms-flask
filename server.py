@@ -18,17 +18,12 @@ users_collection = db.users
 def home():
     return jsonify({'message': 'Welcome to the Product and User API.'}), 200
 
-# Route to add a new user
-@app.route('/users', methods=['POST'])
-def add_user():
-    if not request.json or not all(k in request.json for k in ('username', 'password')):
-        return abort(400, 'Username and password are required.')
-
-    username = request.json['username']
-    password = request.json['password']
-
-    # Hash the password using bcrypt
-    # hashed_password = hashpw(password.encode('utf-8'), gensalt())
+# Route to add a new product
+@app.route('/products', methods=['POST'])
+def add_product():
+    # Ensure request JSON exists and is a list
+    if not request.json or not isinstance(request.json, list):
+        abort(400, "Request must be a list of products with 'name', 'price', 'category', 'quantity', and 'image'.")
 
     try:
         # Check if user already exists
