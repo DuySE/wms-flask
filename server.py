@@ -19,23 +19,23 @@ def home():
     return jsonify({'message': 'Welcome to the Product and User API.'}), 200
 
 # Route to add a new product
-@app.route('/products', methods=['POST'])
-def add_product():
+@app.route('/users', methods=['POST'])
+def add_user():
     # Ensure request JSON exists and is a list
-    if not request.json or not isinstance(request.json, list):
-        abort(400, "Request must be a list of products with 'name', 'price', 'category', 'quantity', and 'image'.")
+    if not request.json or not all(k in request.json for k in ('username', 'password')):
+        abort(400, "Request must be a list of products with 'username', 'password'.")
 
     try:
+        data = request.json
         # Check if user already exists
-        existing_user = users_collection.find_one({'username': username})
+        existing_user = users_collection.find_one({'username': data['username']})
         if existing_user:
-            return jsonify({'message': f'{username} is already taken. Try another username.'}), 400
+            return jsonify({'message': f'{data['username']} is already taken. Try another username.'}), 400
 
         # Create new user document
         new_user = {
-            'username': username,
-            # 'password': hashed_password.decode('utf-8'),
-            'password': password,
+            'username': data['username'],
+            'password': data['password'],
             'isAdmin': False, # Default role
             'address': '',
             'phone': '',
@@ -48,6 +48,18 @@ def add_product():
 
     except Exception as e:
         return jsonify({'message': 'An error occurred during registration.', 'error': str(e)}), 500
+
+# Route to get all users
+@app.route('/users', methods=['GET'])
+def get_users():
+    try:
+        # Fetch users
+        users = list(users_collection.find())
+        for user in users:
+            user['_id'] = str(user['_id'])
+        return jsonify(users), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Route to get a user by username
 @app.route('/users/<username>', methods=['GET'])
