@@ -217,6 +217,15 @@ def get_products():
         return jsonify(products), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# Route to delete a user
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    try:
+        users_collection.delete_one({'_id': ObjectId(user_id)})
+        return jsonify({'message': 'User deleted successfully.'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Route to get a product by id
 @app.route('/products/<product_id>', methods=['GET'])
@@ -233,7 +242,7 @@ def get_product_by_id(product_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Route to update product
+# Route to update a product
 @app.route('/products/<product_id>', methods=['PUT'])
 def update_product(product_id):
     try:
@@ -243,7 +252,7 @@ def update_product(product_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Route to delete product
+# Route to delete a product
 @app.route('/products/<product_id>', methods=['DELETE'])
 def delete_product(product_id):
     try:
