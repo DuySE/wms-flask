@@ -221,10 +221,10 @@ def get_products():
         return jsonify({'error': str(e)}), 500
     
 # Route to delete a user
-@app.route('/users/<user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@app.route('/users/<username>', methods=['DELETE'])
+def delete_user(username):
     try:
-        users_collection.delete_one({'_id': ObjectId(user_id)})
+        users_collection.delete_one({'username': username})
         return jsonify({'message': 'User deleted successfully.'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
