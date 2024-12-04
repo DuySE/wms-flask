@@ -2,16 +2,18 @@ from flask import Flask, abort, jsonify, request
 from bcrypt import hashpw, gensalt, checkpw
 from bson import ObjectId
 from pymongo import MongoClient
+from datetime import datetime
 
 app = Flask(__name__)
 
 # MongoDB Atlas connection string
-client = MongoClient("mongodb+srv://admin:admin@cluster0.5n6rm.mongodb.net")
+client = MongoClient('mongodb+srv://admin:admin@cluster0.5n6rm.mongodb.net')
 
 # Access the 'wms' database and 'products' collection
 db = client.wms
 products_collection = db.products
 users_collection = db.users
+transactions_collection = db.transactions
 
 # Root route for health check
 @app.route('/')
@@ -44,7 +46,7 @@ def add_user():
 
         # Insert the new user into the collection
         users_collection.insert_one(new_user)
-        return jsonify({"message": "User added successfully."}), 201
+        return jsonify({'message': 'User added successfully.'}), 201
 
     except Exception as e:
         return jsonify({'message': 'An error occurred during registration.', 'error': str(e)}), 500
@@ -258,6 +260,65 @@ def delete_product(product_id):
     try:
         products_collection.delete_one({'_id': ObjectId(product_id)})
         return jsonify({'message': 'Product deleted successfully.'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+# Route to get transaction by date
+@app.route('/transactions', methods=['GET'])
+def get_transaction():
+
+    # Get optional query parameter for filtering
+    date = request.args.get('date')
+
+    # Build query based on parameters
+    query = {}
+    
+    current_date = datetime.now().strftime("%Y-%m-%d")
+
+    if date is not None:
+        query['date'] = date
+    else:
+        query['date'] = current_date
+
+    try:
+        # Fetch products
+        transactions = list(transactions_collection.find(query))
+        for transaction in transactions:
+            transaction['_id'] = str(transaction['_id'])
+        return jsonify(transactions), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/transactions', methods=['POST'])
+def add_transaction():
+    try:
+        # Get the transaction data from the request
+        data = request.json
+
+        # Validate required fields
+        required_fields = ['image', 'name', 'price', 'date']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f"'{field}' is required."}), 400
+
+        # Insert transaction into database
+        transaction = {
+            'image': data['image'],
+            'name': data['name'],
+            'price': float(data['price']),
+            'date': data['date'],
+        }
+        if 'id' in data and data['id'] is not None:
+            transaction['_id'] = data['id']
+        
+        result = users_collection.insert_one(transaction)
+
+        # Return success response
+        return jsonify({
+            'message': 'Transaction added successfully.',
+            'transaction_id': str(result.inserted_id)
+        }), 201
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
