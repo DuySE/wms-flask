@@ -301,6 +301,7 @@ def add_transaction():
             if field not in data:
                 return jsonify({'error': f"'{field}' is required."}), 400
 
+        print("Request data:", data)
         # Insert transaction into database
         transaction = {
             'image': data['image'],
@@ -311,7 +312,7 @@ def add_transaction():
         if 'id' in data and data['id'] is not None:
             transaction['_id'] = data['id']
         
-        result = users_collection.insert_one(transaction)
+        result = transactions_collection.insert_one(transaction)
 
         # Return success response
         return jsonify({
