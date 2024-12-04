@@ -265,7 +265,7 @@ def delete_product(product_id):
     
 # Route to get transaction by date
 @app.route('/transactions', methods=['GET'])
-def get_transaction():
+def get_transaction_by_date():
 
     # Get optional query parameter for filtering
     date = request.args.get('date')
@@ -296,7 +296,7 @@ def add_transaction():
         data = request.json
 
         # Validate required fields
-        required_fields = ['image', 'name', 'price', 'date']
+        required_fields = ['image', 'name', 'price', 'quantity', 'date']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f"'{field}' is required."}), 400
@@ -307,6 +307,7 @@ def add_transaction():
             'image': data['image'],
             'name': data['name'],
             'price': float(data['price']),
+            'quantity': int(data['quantity']),
             'date': data['date'],
         }
         if 'id' in data and data['id'] is not None:
